@@ -197,11 +197,11 @@ Here is an example of my result on a test image:
 
 There are 3 videos in the project and here are my final video output
 
-1.  Project video [https://youtu.be/jYFG3cjl8R0](./project_video.mp4)
+1.  [Project video](https://youtu.be/jYFG3cjl8R0)
 
-2.  Challenge video [https://youtu.be/7vBXVduiKUc](./challenge_video.mp4)
+2.  [Challenge video](https://youtu.be/7vBXVduiKUc)
 
-3.  HarderChallenge video [https://youtu.be/7HsluwL0tvY](./harder_challenge_video.mp4)
+3.  [Harder challenge video](https://youtu.be/7HsluwL0tvY)
 
 
 ---
