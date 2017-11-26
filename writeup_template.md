@@ -60,7 +60,56 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 
+<<<<<<< HEAD
+#### 2.1 Improving the color of the image
+
+##### 2.1.1 Color constancy
+Color constancy is an example of subjective constancy and a feature of the human color perception system which ensures that the perceived
+ color of objects remains relatively constant under varying illumination conditions. In this project, it helps the program to identify 
+ the color of the pixel irrespective to the shadow on the road.
+
+##### 2.1.1 White lane line
+On the road, the white lane line may be within the shadow, this will make the pixel represent the white lane line become a light gray 
+ or even a grey. It appears to be white because your brain seeing this gray pixel will try to subtract the shadow and think that it is a white.
+
+To enhance the image so that the white lane, using CLAHE can improve the image so that pixel can have enough intensity to pass though the 
+threshold set by the program. Sometime, even CLAHE cannot give a satisfying image, retinex algorithm can be used. In this project, If the
+program detected the image quality is not enough, it will switch to automated MSRCR as a final resort to improve image quality
+
+##### 2.1.2 Yellow lane line
+Same logic according to the white lane line, but using CLAHE to restore the color of yellow line is undesirable in dark images, which result in a 
+washed-out yellow. using automated MSRCR can return a yellow lane.
+
+##### 2.2.2 Creating a binary image
+
+There are 2 steps to create a binary image.
+
+First, we create a color mask to mask out all the irrelevant area in the image.
+
+1. A color filter to search for yellow color in LAB B channel
+2. A color filter to search for grey - white color in RGB color space
+3. A color filter to filter out black color in RGB color space
+
+Then I apply the following on the image to create the binary image.
+
+1. $$Sobel_X$$ kernel to detect the change in the horizontal direction within the image
+2. use HSL color space to search for color having S channel within 170-255
+3. use RGB color space to search for light gray to white
+
+Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+
+Color mask
+
+![alt text][image3]
+
+Binary image
+
+![alt text][image3]
+
+Resulting image
+=======
 I used a combination of color and gradient thresholds to generate a binary image (thresholding steps at lines # through # in `another_file.py`).  Here's an example of my output for this step.  (note: this is not actually from one of the test images)
+>>>>>>> parent of 3768ae3... first week commit 3
 
 ![alt text][image3]
 
@@ -96,6 +145,7 @@ I verified that my perspective transform was working as expected by drawing the 
 
 #### 4. Describe how (and identify where in your code) you identified lane-line pixels and fit their positions with a polynomial?
 
+To identified the lane-lane pixels
 Then I did some other stuff and fit my lane lines with a 2nd order polynomial kinda like this:
 
 ![alt text][image5]
