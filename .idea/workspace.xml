@@ -2,39 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="87233157-ede8-4905-9ace-89b3fccaaff5" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_test1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_test2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_test3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_test4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_test5.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_test6.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg2_test1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg2_test2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg2_test3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg2_test4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg2_test5.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg2_test6.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg_test1.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg_test2.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg_test3.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg_test4.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg_test5.jpg" afterPath="" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/neg_test6.jpg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/error_images/error.jpg" afterPath="$PROJECT_DIR$/error_images/error.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test1.jpg" afterPath="$PROJECT_DIR$/output_images/test1.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test2.jpg" afterPath="$PROJECT_DIR$/output_images/test2.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test3.jpg" afterPath="$PROJECT_DIR$/output_images/test3.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test4.jpg" afterPath="$PROJECT_DIR$/output_images/test4.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test5.jpg" afterPath="$PROJECT_DIR$/output_images/test5.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test6.jpg" afterPath="$PROJECT_DIR$/output_images/test6.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/challenge_video.mp4" afterPath="$PROJECT_DIR$/output_videos/challenge_video.mp4" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/harder_challenge_video.mp4" afterPath="$PROJECT_DIR$/output_videos/harder_challenge_video.mp4" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/project_video.mp4" afterPath="$PROJECT_DIR$/output_videos/project_video.mp4" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-example.ipynb" afterPath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-example.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines.ipynb" afterPath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" afterPath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Color normalization.ipynb" afterPath="$PROJECT_DIR$/Color normalization.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/detect_lane.py" afterPath="$PROJECT_DIR$/detect_lane.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_template.md" afterPath="$PROJECT_DIR$/writeup_template.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -46,28 +16,15 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="detect_lane_v3.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/detect_lane_v3.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="753">
-              <caret line="691" column="30" lean-forward="false" selection-start-line="691" selection-start-column="30" selection-end-line="691" selection-end-column="30" />
-              <folding>
-                <element signature="e#0#11#0" expanded="true" />
-                <marker date="1512491865018" expanded="true" signature="36129:36365" ph="..." />
-                <marker date="1512491865018" expanded="true" signature="36241:36346" ph="..." />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="detect_lane_v2.py" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/detect_lane_v2.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="416">
-              <caret line="80" column="82" lean-forward="true" selection-start-line="80" selection-start-column="82" selection-end-line="80" selection-end-column="82" />
-              <folding>
-                <element signature="e#0#18#0" expanded="true" />
-              </folding>
+      <file leaf-file-name="writeup_template.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/writeup_template.md">
+          <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+            <state split_layout="SECOND">
+              <first_editor relative-caret-position="15">
+                <caret line="233" column="3" lean-forward="false" selection-start-line="233" selection-start-column="3" selection-end-line="233" selection-end-column="3" />
+                <folding />
+              </first_editor>
+              <second_editor />
             </state>
           </provider>
         </entry>
@@ -97,8 +54,8 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/writeup_template.md" />
         <option value="$PROJECT_DIR$/detect_lane_v3.py" />
+        <option value="$PROJECT_DIR$/writeup_template.md" />
       </list>
     </option>
   </component>
@@ -109,9 +66,10 @@
     <sorting>DEFINITION_ORDER</sorting>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="5" />
-    <option name="width" value="1932" />
-    <option name="height" value="1045" />
+    <option name="x" value="-8" />
+    <option name="y" value="-8" />
+    <option name="width" value="1936" />
+    <option name="height" value="1056" />
   </component>
   <component name="ProjectView">
     <navigator currentView="ProjectPane" proportions="" version="1">
@@ -129,7 +87,6 @@
     </navigator>
     <panes>
       <pane id="Scope" />
-      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -144,6 +101,7 @@
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -331,10 +289,9 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="5" y="0" width="1932" height="1045" extended-state="0" />
-    <editor active="true" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17788461" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.17910448" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -370,23 +327,17 @@
   <component name="editorHistoryManager">
     <entry file="file://$PROJECT_DIR$/detect_lane_v3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1512491865018" expanded="true" signature="36129:36365" ph="..." />
-            <marker date="1512491865018" expanded="true" signature="36241:36346" ph="..." />
-          </folding>
+        <state relative-caret-position="10365">
+          <caret line="691" column="30" lean-forward="false" selection-start-line="691" selection-start-column="30" selection-end-line="691" selection-end-column="30" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/detect_lane_v2.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8835">
-          <caret line="602" column="0" lean-forward="false" selection-start-line="594" selection-start-column="0" selection-end-line="602" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="1005">
+          <caret line="80" column="82" lean-forward="true" selection-start-line="80" selection-start-column="82" selection-end-line="80" selection-end-column="82" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -394,24 +345,20 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1512491865018" expanded="true" signature="36129:36365" ph="..." />
-            <marker date="1512491865018" expanded="true" signature="36241:36346" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detect_lane_v2.py">
+    <entry file="file://$PROJECT_DIR$/detect_lane_v2.py" />
+    <entry file="file://$PROJECT_DIR$/detect_lane_v3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8835">
-          <caret line="602" column="0" lean-forward="true" selection-start-line="594" selection-start-column="0" selection-end-line="602" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/detect_lane_v2.py" />
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SECOND">
@@ -452,16 +399,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/writeup_template.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="529">
-            <caret line="199" column="49" lean-forward="true" selection-start-line="199" selection-start-column="19" selection-end-line="199" selection-end-column="49" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SECOND">
@@ -474,23 +411,21 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/detect_lane_v3.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="753">
+        <state relative-caret-position="15">
           <caret line="691" column="30" lean-forward="false" selection-start-line="691" selection-start-column="30" selection-end-line="691" selection-end-column="30" />
-          <folding>
-            <element signature="e#0#11#0" expanded="true" />
-            <marker date="1512491865018" expanded="true" signature="36129:36365" ph="..." />
-            <marker date="1512491865018" expanded="true" signature="36241:36346" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/detect_lane_v2.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="416">
-          <caret line="80" column="82" lean-forward="true" selection-start-line="80" selection-start-column="82" selection-end-line="80" selection-end-column="82" />
-          <folding>
-            <element signature="e#0#18#0" expanded="true" />
-          </folding>
+    <entry file="file://$PROJECT_DIR$/detect_lane_v2.py" />
+    <entry file="file://$PROJECT_DIR$/writeup_template.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SECOND">
+          <first_editor relative-caret-position="15">
+            <caret line="233" column="3" lean-forward="false" selection-start-line="233" selection-start-column="3" selection-end-line="233" selection-end-column="3" />
+            <folding />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
