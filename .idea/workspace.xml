@@ -2,26 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="87233157-ede8-4905-9ace-89b3fccaaff5" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/z test4.jpg" afterPath="" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/road_side.png" afterPath="$PROJECT_DIR$/output_images/road_side.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test1.jpg" afterPath="$PROJECT_DIR$/output_images/test1.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test2.jpg" afterPath="$PROJECT_DIR$/output_images/test2.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test3.jpg" afterPath="$PROJECT_DIR$/output_images/test3.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test5.jpg" afterPath="$PROJECT_DIR$/output_images/test5.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test6.jpg" afterPath="$PROJECT_DIR$/output_images/test6.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/too_left.png" afterPath="$PROJECT_DIR$/output_images/too_left.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/too_right.png" afterPath="$PROJECT_DIR$/output_images/too_right.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/color_constancy.png" afterPath="$PROJECT_DIR$/writeup_images/color_constancy.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/color_detection.png" afterPath="$PROJECT_DIR$/writeup_images/color_detection.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/edge_detection.png" afterPath="$PROJECT_DIR$/writeup_images/edge_detection.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/perspective_transformation.png" afterPath="$PROJECT_DIR$/writeup_images/perspective_transformation.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/road_detection.png" afterPath="$PROJECT_DIR$/writeup_images/road_detection.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/undistort_output.png" afterPath="$PROJECT_DIR$/writeup_images/undistort_output.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/undistort_test1.png" afterPath="$PROJECT_DIR$/writeup_images/undistort_test1.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/CarND-Advanced-Lane-Lines-final-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/CarND-Advanced-Lane-Lines-final-checkpoint.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" afterPath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_template.md" afterPath="$PROJECT_DIR$/writeup_template.md" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup.md" afterPath="$PROJECT_DIR$/writeup.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,12 +14,12 @@
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="writeup_template.md" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/writeup_template.md">
+      <file leaf-file-name="writeup.md" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/writeup.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="255">
-                <caret line="26" column="62" lean-forward="true" selection-start-line="26" selection-start-column="62" selection-end-line="26" selection-end-column="62" />
+              <first_editor relative-caret-position="294">
+                <caret line="99" column="63" lean-forward="false" selection-start-line="99" selection-start-column="63" selection-end-line="99" selection-end-column="63" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -73,6 +54,7 @@
       <list>
         <option value="$PROJECT_DIR$/detect_lane_v3.py" />
         <option value="$PROJECT_DIR$/writeup_template.md" />
+        <option value="$PROJECT_DIR$/writeup.md" />
       </list>
     </option>
   </component>
@@ -306,7 +288,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="7" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18230277" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -426,8 +408,19 @@
     <entry file="file://$PROJECT_DIR$/writeup_template.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="255">
-            <caret line="26" column="62" lean-forward="true" selection-start-line="26" selection-start-column="62" selection-end-line="26" selection-end-column="62" />
+          <first_editor relative-caret-position="240">
+            <caret line="25" column="48" lean-forward="false" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="48" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/writeup.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="294">
+            <caret line="99" column="63" lean-forward="false" selection-start-line="99" selection-start-column="63" selection-end-line="99" selection-end-column="63" />
             <folding />
           </first_editor>
           <second_editor />
