@@ -72,6 +72,12 @@ class Camera:
         
         self.ym_per_pix = 30 / 720  # meters per pixel in y dimension
         self.xm_per_pix = 3.7 / 700  # meters per pixel in x dimension
+        
+        ret, mtx, dist, rvecs, tvecs = \
+            cv2.calibrateCamera(self.objpoints, self.imgpoints, self.image_shape, None, None)
+            
+        self.mtx = mtx
+        self.dist = dist
 
     def __find_camera_distortion_mapping(self, src):
         # prepare object points, like (0,0,0), (1,0,0), (2,0,0) ....,(6,5,0)
@@ -101,9 +107,7 @@ class Camera:
         return objpoints, imgpoints
 
     def cal_undistort(self, img):
-        ret, mtx, dist, rvecs, tvecs = \
-            cv2.calibrateCamera(self.objpoints, self.imgpoints, self.image_shape, None, None)
-        undist = cv2.undistort(img, mtx, dist, None, mtx)
+        undist = cv2.undistort(img, self.mtx, self.dist, None, self.mtx)
         return undist
 
     def transform_to_bird_view(self, image):
@@ -159,16 +163,18 @@ class RoadFeatureDetector:
             self.image = None
             self.image_yuv = None
             self.image_hsv = None
+            self.image_lab = None
             self.image_enhanced = None
             self.image_enhanced_yuv = None
             self.image_enhanced_hsv = None
+            self.image_enhanced_lab = None
 
             #MASKING
             #image related
             self.lower_half_start_y = 450
             self.near_car_start_y = 600
             #road detection
-            self.road_color_diff =  40 #15
+            self.road_color_diff = 30 #15
             self.road_closing_size = 70
             self.road_dilate_size = 60 #10
             #mask related
@@ -193,8 +199,8 @@ class RoadFeatureDetector:
             # hsl detection
             self.hsl_threshold = (0, 255)
             #yellow detection
-            self.yellow_lower = np.array([20, 20, 60], dtype=np.uint8)
-            self.yellow_upper = np.array([80, 255, 255], dtype=np.uint8)
+            self.yellow_lower = 155
+            self.yellow_upper = 200
             #white detection
             self.white_intensity_threshold = None
             self.white_intensity_threshold_low = None
@@ -288,11 +294,12 @@ class RoadFeatureDetector:
 
         return binary_output
 
-    def __yellow_color(self, image_hsv, lower_yellow, upper_yellow, dilate_kernel_size):
-        hsv = image_hsv
-
+    def __yellow_color(self, image_lab, lower_yellow, upper_yellow, dilate_kernel_size):
+        b_channel = image_lab[:,:,2]
         # Threshold the HSV image to get only yellow colors
-        mask = cv2.inRange(hsv, lower_yellow, upper_yellow)
+        mask = np.zeros_like(b_channel, dtype=np.uint8)
+
+        mask[(b_channel >= lower_yellow) & (b_channel <= upper_yellow)] = 1
 
         if(dilate_kernel_size > 0):
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (dilate_kernel_size, dilate_kernel_size))
@@ -302,12 +309,11 @@ class RoadFeatureDetector:
 
         return mask
 
-    def __white_color(self, image, lower_white, dilate_kernel_size):
-        
-        lower_white = np.array([lower_white, lower_white, lower_white], dtype=np.uint8)
-        upper_white = np.array([255, 255, 255], dtype=np.uint8)
+    def __white_color(self, image_lab, lower_white, dilate_kernel_size):
+        l_channel = image_lab[:,:,0]
+        mask = np.zeros_like(l_channel, dtype=np.uint8)
 
-        mask = cv2.inRange(image, lower_white, upper_white)
+        mask[(l_channel >= lower_white) & (l_channel <= 255)] = 1
         
         if(dilate_kernel_size > 0):
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (dilate_kernel_size, dilate_kernel_size))
@@ -348,52 +354,29 @@ class RoadFeatureDetector:
     def __percentile(self, data, percentile):
         size = len(data)
         return data[int(math.ceil((size * percentile) / 100)) - 1]
-
-    def __gray_road_detector_x(self, image_yuv, road_start_px, road_color_diff, \
-                             road_closing_size, road_dilate_size):
-        yuv = image_yuv
-        h,w = image_yuv.shape[:-1]
-        seed = (w//2,h*7//8)
-        sample_cr = yuv[seed[0]][seed[1]][1]
-        sample_cb = yuv[seed[0]][seed[1]][2]
-
-        closing_kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(road_closing_size,road_closing_size))
-        dilate_kernel = cv2.getStructuringElement(cv2.MORPH_RECT,(road_dilate_size,road_dilate_size))
-
-        lower_limit = np.array([0, sample_cr-road_color_diff, sample_cb-road_color_diff])
-        upper_limit = np.array([255, sample_cr+road_color_diff, sample_cb+road_color_diff])
-
-        mask = cv2.inRange(yuv, lower_limit, upper_limit)
-        mask = cv2.morphologyEx(mask, cv2.MORPH_CLOSE, closing_kernel)
-        mask[mask > 0] = 255
-        result = mask
-
-        mask = np.zeros((h+2,w+2),np.uint8)
-
-        floodflags = 4
-        floodflags |= cv2.FLOODFILL_MASK_ONLY
-        floodflags |= (255 << 8)
-
-        num,im,mask,rect = cv2.floodFill(result, mask, seed, 255, 0, 0, floodflags)
-        #mask = scipy.ndimage.binary_fill_holes(mask[1:-1,1:-1], structure=np.ones((5,5))).astype(np.uint8)
-        mask = cv2.morphologyEx(mask[1:-1,1:-1], cv2.MORPH_CLOSE, closing_kernel)
-
-        mask[(mask > 0)] = 1
-
-        #dilation
-        mask = cv2.dilate(mask, dilate_kernel, iterations=1)
-        mask[(mask > 0)] = 1
-
-        return mask
     
     def __gary_road_detector_helper(self, image_hsv, seed, road_color_diff, \
                              road_closing_size, road_dilate_size):
         hsv = image_hsv
         h,w = hsv.shape[:-1]
         img_x = np.zeros_like(hsv[:,:,0])
-        base_color = hsv[seed[1],seed[0],0]
-        min_th, max_th = max(0, base_color-road_color_diff),  min(255, base_color+road_color_diff)
-        img_x[(hsv[:,:,0] >= min_th) & (hsv[:,:,0] <= max_th)] = 1
+        
+        mask = np.ones_like(hsv[:,:,1], dtype=np.uint8)
+        mask[(hsv[:,:,1] > 90) & (hsv[:,:,2] > 60)] = 0
+        mask[hsv[:,:,2] > 225] = 0
+        
+        h_channel = image_hsv[:,:,0]
+        s_channel = image_hsv[:,:,1]
+        
+        base_h = h_channel[seed[1], seed[0]]
+        base_s = s_channel[seed[1], seed[0]]
+        min_th_h, max_th_h = max(0, base_h-road_color_diff),  min(255, base_h+road_color_diff)
+        min_th_s, max_th_s = max(0, base_s-road_color_diff),  min(255, base_s+road_color_diff)
+        
+        img_x[(mask == 1) & 
+              (((h_channel >= min_th_h) & (h_channel <= max_th_h)) |
+              ((s_channel >= min_th_s) & (s_channel <= max_th_s))) ] = 1
+        
         mask = np.zeros((h+2,w+2),np.uint8)
         mask[0,:] = 1
         mask[:,0] = 1
@@ -443,42 +426,36 @@ class RoadFeatureDetector:
                                              param.road_closing_size, param.road_dilate_size)
         
         param.white_intensity_threshold, param.white_intensity_threshold_low \
-            = self.__find_white_threshold(g_binary, param.image_enhanced_yuv[:,:,0])
+            = self.__find_white_threshold(g_binary, param.image_enhanced_lab[:,:,0])
+        #param.white_intensity_threshold = min(param.white_intensity_threshold, 225)
         
         param.output_mask_road = g_binary
         
-        if param.enable_color_mask:
-            y_binary = self.__yellow_color(param.image_hsv, param.yellow_lower, param.yellow_upper, param.mask_dilate)
-            w_binary = self.__white_color(param.image, param.white_intensity_threshold, param.mask_dilate)
-            sx_binary = self.__remove_non_line_structure(self.__highlight_horizontal_line(param.image_yuv[:,:,0]),
-                                                                                         param.non_line_closing_size,
-                                                                                         param.non_line_opening_size)
-            mask_clr = np.zeros_like(y_binary)
-            mask_clr[(g_binary == 1) & ((y_binary == 1) | (w_binary == 1) | (sx_binary == 1))] = 1
-
-            param.output_mask_yellow = y_binary
-            param.output_mask_white = w_binary
-            param.output_mask_edge = sx_binary
-            clr_binary = np.bitwise_or(y_binary, w_binary)
-        else:
-            mask_clr = g_binary
-            clr_binary = np.zeros_like(mask_clr)
-            sx_binary = np.zeros_like(mask_clr)
+        mask_clr = g_binary
             
         if self.debug_flag:
-            debug_image = np.dstack(( g_binary, clr_binary, sx_binary)) * 255
+            debug_image = np.dstack(( np.zeros_like(g_binary), g_binary, np.zeros_like(g_binary))) * 255
             for seed in seeds:
                 cv2.circle(debug_image, seed, 5, (0,0,255), -1)
+                        
+            nonzero_ptg= len(debug_image.nonzero()[0]) * 1.0 / debug_image.size * 100
+            cv2.putText(debug_image, "COVER PERCENTAGE: %d%%" % nonzero_ptg, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2,
+                        cv2.LINE_AA)
             
             self.debug_dict['mask'] = debug_image
             
         return mask_clr
 
     def __create_feature(self, param):
-        sxbinary = self.__abs_sobel_thresh(param.image_yuv[:,:,0], param.abs_sobel_direction,
+        denoise_image = cv2.fastNlMeansDenoising(param.image_yuv[:,:,0],None,10,7,21)
+        sxbinary = self.__abs_sobel_thresh(denoise_image, param.abs_sobel_direction,
                                            param.abs_sobel_low_threshold, param.abs_sobel_high_threshold)
-        s_yellow = self.__yellow_color(param.image_enhanced_hsv, param.yellow_lower, param.yellow_upper, 0)
-        s_white = self.__white_color(param.image_enhanced, param.white_intensity_threshold, 0)
+        s_yellow = self.__yellow_color(param.image_enhanced_lab, param.yellow_lower, param.yellow_upper, 0)
+        
+        #lower_white = min(param.white_intensity_threshold, 225)
+        s_white = self.__white_color(param.image_enhanced_lab, param.white_intensity_threshold, 0)
+        if np.count_nonzero(s_white) > np.size(param.image_yuv[:,:,0]) * 0.05 :
+            s_white = np.zeros_like(param.image_yuv[:,:,0])
 
         #if param.remove_nonline_in_feature:
         #    sxbinary = self.__remove_non_line_structure(sxbinary, param.non_line_closing_size, param.non_line_opening_size)
@@ -521,8 +498,8 @@ class RoadFeatureDetector:
     def __find_white_threshold(self, road_mask, image_gray):
         data = image_gray[image_gray.nonzero()].ravel()
         data = np.sort(data)
-        thresh = self.__percentile(data, 95)+1
-        thresh_low = self.__percentile(data, 93)+1
+        thresh = min(self.__percentile(data, 99)+1, 255)
+        thresh_low = min(self.__percentile(data, 97)+1, 255)
         
         return thresh, thresh_low
     
@@ -538,10 +515,12 @@ class RoadFeatureDetector:
         process_param.image = image
         process_param.image_yuv = cv2.cvtColor(image, cv2.COLOR_RGB2YUV)
         process_param.image_hsv = cv2.cvtColor(image, cv2.COLOR_RGB2HSV)
+        process_param.image_lab = cv2.cvtColor(image, cv2.COLOR_RGB2LAB)
         
         process_param.image_enhanced = image_enhanced
         process_param.image_enhanced_yuv = cv2.cvtColor(image_enhanced, cv2.COLOR_RGB2YUV)
         process_param.image_enhanced_hsv = cv2.cvtColor(image_enhanced, cv2.COLOR_RGB2HSV)
+        process_param.image_enhanced_lab = cv2.cvtColor(image_enhanced, cv2.COLOR_RGB2LAB)
 
         mask = self.__create_mask(process_param)
         color = self.__create_feature(process_param)
@@ -556,6 +535,7 @@ class RoadFeatureDetector:
 
     def get_debug_info(self):
         return self.debug_dict;
+
 
 class Lane:
     def __init__(self, polyfit):
@@ -598,7 +578,7 @@ class Lane:
             return 0
         else: 
             return np.count_nonzero(self.is_windows_good == False) / len(self.is_windows_good)
-			
+
 class LaneDetectorParam():
     def __init__(self):
         self.image_shape = None
@@ -607,7 +587,7 @@ class LaneDetectorParam():
         self.find_lane_lane_sigma = 200
         self.find_lane_no_detect_window_y = 15
         self.find_lane_window_margin_x = 100
-        self.find_lane_min_pixel = 30
+        self.find_lane_min_pixel = 300 #30
         self.find_lane_weighting = lambda norm_x, norm_y: norm_y ** 2
         self.camera_dir = './camera_cal'
         #remove non-line in features
@@ -644,18 +624,11 @@ class LaneDetector():
         np.clip(result, 0, 255, out=result)
         return result.astype(np.uint8)
 
-    def __draw_histogram(self, binary_warped, weights):
-        shape = binary_warped.shape[1::-1]
+    def __draw_histogram(self, histogram, remarks=""):
         fig = Figure(figsize=(3, 1))
         fig.subplots_adjust(left=0, right=1, bottom=0, top=1)
         canvas = FigureCanvas(fig)
         ax = fig.gca()
-        if(weights is not None):
-            weighted_binary_warped = weights * binary_warped
-        else:
-            weighted_binary_warped = binary_warped
-            
-        histogram = np.sum(weighted_binary_warped[weighted_binary_warped.shape[0] * 3 // 4 :, :], axis=0)
 
         ax.plot(histogram)
         ax.set_yticklabels([])
@@ -665,7 +638,9 @@ class LaneDetector():
 
         width, height = fig.get_size_inches() * fig.get_dpi()
         image = np.fromstring(canvas.tostring_rgb(), dtype='uint8').reshape(int(height), int(width), 3)
-
+        
+        cv2.putText(image, remarks, (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.4, (255, 255, 255), 2, cv2.LINE_AA)
+        
         return image
     
     def __find_left_and_right_base(self, binary_warped, left_lane, right_lane, lane_sigma):
@@ -678,6 +653,9 @@ class LaneDetector():
         midpoint = np.int(histogram_50.shape[0] // 2)
         leftx_base = (np.argmax(histogram_50[:midpoint]) + np.argmax(histogram_25[:midpoint]) *2)//3
         rightx_base = (np.argmax(histogram_50[midpoint:]) + np.argmax(histogram_25[midpoint:]) * 2)//3 + midpoint
+        
+        if(self.__debug_flag):
+            self.__debug_dict['histogram'] = self.__draw_histogram(histogram_25, "SIMPLE")
         
         return leftx_base, rightx_base
     
@@ -695,12 +673,15 @@ class LaneDetector():
         leftx_base = (np.argmax(histogram_50[:midpoint]) + np.argmax(histogram_25[:midpoint]) *2)//3
         rightx_base = (np.argmax(histogram_50[midpoint:]) + np.argmax(histogram_25[midpoint:]) * 2)//3 + midpoint
         
-        rightx_base_st = int(leftx_base + spacing * 0.75)
+        rightx_base_st = int(leftx_base + spacing * 0.7)
         rightx_base_2 = (np.argmax(histogram_50[rightx_base_st:]) 
                          + np.argmax(histogram_25[rightx_base_st:]) * 2)//3 + rightx_base_st
         
-        leftx_base_st = int(rightx_base - spacing * 0.75)
+        leftx_base_st = int(rightx_base - spacing * 0.7)
         leftx_base_2 = (np.argmax(histogram_50[:leftx_base_st]) + np.argmax(histogram_25[:leftx_base_st]) * 2)//3
+        
+        if(self.__debug_flag):
+            self.__debug_dict['histogram'] = self.__draw_histogram(histogram, "FIX W")
         
         if(max(histogram[leftx_base], histogram[rightx_base_2]) > max(histogram[leftx_base_2], histogram[rightx_base])):
             return leftx_base, rightx_base_2
@@ -713,12 +694,28 @@ class LaneDetector():
         weights = self.__birdview_pixel_weighting(shape, left_lane, right_lane, shape[1] // 2, 3, lane_sigma)
         weighted_binary_warped = weights * binary_warped
         # Sum quarter bottom of image to get slice, could use a different ratio
-        l_sum = np.sum(binary_warped[int(3*weighted_binary_warped.shape[0]/4):,:int(weighted_binary_warped.shape[1]/2)], axis=0)
+        histogram = np.sum(binary_warped[int(3*weighted_binary_warped.shape[0]/4):,:], axis=0)
+        
+        l_sum = histogram[:int(weighted_binary_warped.shape[1]/2)]
         l_center = np.argmax(np.convolve(window,l_sum))-window_width//2
-        r_sum = np.sum(binary_warped[int(3*weighted_binary_warped.shape[0]/4):,int(weighted_binary_warped.shape[1]/2):], axis=0)
+        r_sum = histogram[int(weighted_binary_warped.shape[1]/2):]
         r_center = np.argmax(np.convolve(window,r_sum))-window_width//2+int(weighted_binary_warped.shape[1]/2)
         
+        if(self.__debug_flag):
+            self.__debug_dict['histogram'] = self.__draw_histogram(histogram, "CONV")
+        
         return l_center, r_center
+    
+    def create_reorder_array(self, min_index, max_index):
+        mid = (max_index - min_index)//2
+        result = np.zeros(max_index - min_index, dtype=np.int)
+        left = np.arange(0, mid)
+        left = left[::-1]
+        right = np.arange(mid, max_index - min_index)
+        result[0::2] = right
+        result[1::2] = left
+
+        return np.array(result)
     
     def __find_left_and_right_lane_conv(self, binary_warped, weighting_func, left_lane = 310, right_lane = 960, lane_sigma = 200,
                                    no_detect_window_y = 27, window_margin_x = 100, min_pixel = 20, direction = 0):
@@ -751,6 +748,12 @@ class LaneDetector():
         right_windows = []
         is_left_window_good = []
         is_right_window_good = []
+        leftw = []
+        rightw = []
+        consecutive_bad_left = 0
+        consecutive_bad_right = 0
+        current_leftw = 1
+        current_rightw = 1
         
         win_y_low = int(binary_warped.shape[0]-window_height)
         win_y_high = int(binary_warped.shape[0])
@@ -774,11 +777,17 @@ class LaneDetector():
             offset = window_width//2
             l_min_index = int(max(l_center+offset-margin,0))
             l_max_index = int(min(l_center+offset+margin,binary_warped.shape[1]))
-            l_center_t = np.argmax(conv_signal[l_min_index:l_max_index])+l_min_index-offset
+            l_order = self.create_reorder_array(l_min_index, l_max_index)
+            l_conv_signal = (conv_signal[l_min_index:l_max_index])[l_order]
+            l_center_t = np.argmax(l_conv_signal)
+            l_center_t = l_order[l_center_t]+l_min_index-offset
             # Find the best right centroid by using past right center as a reference
             r_min_index = int(max(r_center+offset-margin,0))
             r_max_index = int(min(r_center+offset+margin,binary_warped.shape[1]))
-            r_center_t = np.argmax(conv_signal[r_min_index:r_max_index])+r_min_index-offset
+            r_order = self.create_reorder_array(r_min_index, r_max_index)
+            r_conv_signal = (conv_signal[r_min_index:r_max_index])[r_order]
+            r_center_t = np.argmax(r_conv_signal)
+            r_center_t = r_order[r_center_t]+r_min_index-offset
             
             # Identify the nonzero pixels in x and y within the window
             
@@ -802,28 +811,56 @@ class LaneDetector():
             if len(good_left_inds) > minpix:
                 is_left_window_good.append(True)
                 l_center = l_center_t
+                consecutive_bad_left = 0
             else:
                 is_left_window_good.append(False)
+                consecutive_bad_left = consecutive_bad_left + 1
             
             if len(good_right_inds) > minpix:   
                 is_right_window_good.append(True)
                 r_center = r_center_t
+                consecutive_bad_right = 0
             else:
                 is_right_window_good.append(False)
+                consecutive_bad_right = consecutive_bad_right + 1
+            
+            # early closing
+            if(consecutive_bad_left == 1 and
+               (l_center < 1.5 * window_width or l_center > binary_warped.shape[1] - 1.5 * window_width)):
+                current_leftw = 0
+            if(consecutive_bad_right == 1 and
+               (r_center < 1.5 * window_width or r_center > binary_warped.shape[1] - 1.5 * window_width)):
+                current_rightw = 0
+                
+            if(consecutive_bad_left == 2):
+                current_leftw = current_leftw / 2
+            elif(consecutive_bad_left == 4):
+                current_leftw = 0
+                
+            if(consecutive_bad_right == 2):
+                current_rightw = current_rightw / 2
+            elif(consecutive_bad_right == 4):
+                current_rightw = 0
+                
+            leftw_batch = binary_warped[nonzeroy[good_left_inds], nonzerox[good_left_inds]] * current_leftw
+            rightw_batch = binary_warped[nonzeroy[good_right_inds], nonzerox[good_right_inds]] * current_rightw
+               
+            leftw.append(leftw_batch)
+            rightw.append(rightw_batch)
+            
                 
         # Concatenate the arrays of indices
         left_lane_inds = np.concatenate(left_lane_inds)
         right_lane_inds = np.concatenate(right_lane_inds)
+        leftw = np.concatenate(leftw)
+        rightw = np.concatenate(rightw)
 
         # Extract left and right line pixel positions
         leftx = nonzerox[left_lane_inds]
         lefty = nonzeroy[left_lane_inds]
         rightx = nonzerox[right_lane_inds]
         righty = nonzeroy[right_lane_inds]
-        leftw = binary_warped[nonzeroy[left_lane_inds], nonzerox[left_lane_inds]] * \
-            weighting_func(leftx / binary_warped.shape[1], lefty / binary_warped.shape[0])
-        rightw = binary_warped[nonzeroy[right_lane_inds], nonzerox[right_lane_inds]] * \
-            weighting_func(rightx / binary_warped.shape[1], righty / binary_warped.shape[0])
+        
             
         # reverse the bird view and the points here
         pts_left = np.transpose(np.vstack([leftx, lefty]))
@@ -835,10 +872,8 @@ class LaneDetector():
         # Fit a second order polynomial to each
         left_fit = np.polyfit(pts_left[:, 1], pts_left[:, 0], 2, w=leftw)
         right_fit = np.polyfit(pts_right[:, 1], pts_right[:, 0], 2, w=rightw)
-
+        
         if(self.__debug_flag):
-            self.__debug_dict['histogram'] = self.__draw_histogram(binary_warped, None)
-            
             # add the line fitting result here
             binary_warped[binary_warped>0] = 255
             binary_warped = cv2.cvtColor(binary_warped, cv2.COLOR_GRAY2RGB)
@@ -1021,9 +1056,11 @@ class LaneDetector():
         right_lane.set_lane_line_pixel(right_lane_inds)
 
         return left_lane, right_lane
+
     
     def average_slope(self, lines):
         slopes = []
+        weights = []
 
         ttl_dst_right = 0.
         ttl_dst_left = 0.
@@ -1036,7 +1073,8 @@ class LaneDetector():
                 slope = ((y2-y1)/(x2-x1))
                 b = y1-slope*x1
                 dist = int(math.sqrt((x2-x1)*(x2-x1) + (y2-y1)*(y2-y1)))
-                slopes.append(slope)
+                for i in range(0, dist, 20):
+                    slopes.append(slope)
         
         return np.median(slopes)
 
@@ -1069,22 +1107,13 @@ class LaneDetector():
     def check_vector_helper(self, img_birdview_bin):
         lines = self.hough_line(img_birdview_bin)
         return self.average_slope(lines)
-    
-    def check_vector(self, img_birdview_bin):
-        left_img = img_birdview_bin[:, :img_birdview_bin.shape[1]//2]
-        right_img = img_birdview_bin[:, img_birdview_bin.shape[1]//2:]
-        
-        left_vector = self.check_vector_helper(left_img)
-        right_vector = self.check_vector_helper(right_img)
-        all_vector = self.check_vector_helper(img_birdview_bin)
-    
-        return all_vector, left_vector, right_vector
+
     
     def determine_heading_direction(self, vector_all):
         # TODO: find out the threshold here
-        if(vector_all > -1 and vector_all < 0):
+        if(vector_all > -0.6 and vector_all < 0):
             direction = 1
-        elif(vector_all < 1 and vector_all > 0):
+        elif(vector_all < 0.6 and vector_all > 0):
             direction = -1
         else:
             direction = 0
@@ -1175,7 +1204,7 @@ class LaneDetector():
             return np.array(debug_im), left_lane, right_lane
         else:
             return image, left_lane, right_lane
-			
+
 class VideoLaneDetector(LaneDetector):
 
     def __init__(self):
@@ -1186,7 +1215,7 @@ class VideoLaneDetector(LaneDetector):
         self.prev_left_lane = None
         self.prev_right_lane = None
         self.measure_lane_width_data = []
-        self.heading_direction = None
+        self.heading_direction = 0
         self.prev_lane_cnt = 0 
         
         # debug message
@@ -1203,7 +1232,7 @@ class VideoLaneDetector(LaneDetector):
         
         y_pos = 30
         for message in debug_message:
-            cv2.putText(image, message, (720, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (255, 255, 255), 2, cv2.LINE_AA)
+            cv2.putText(image, message, (720, y_pos), cv2.FONT_HERSHEY_SIMPLEX, 0.6, (255, 255, 255), 2, cv2.LINE_AA)
             y_pos = y_pos + 25
         
     def augmented_image(self, image):
@@ -1225,12 +1254,12 @@ class VideoLaneDetector(LaneDetector):
     
     def determine_heading_direction(self, vector_all):
         # to center
-        if vector_all >= 1 or vector_all <= -1:
+        if vector_all >= 0.6 or vector_all <= -0.6:
             self.heading_direction = 0
         
-        if(self.heading_direction == 0 and vector_all > -1 and vector_all < 0):
+        if(self.heading_direction == 0 and vector_all > -0.6 and vector_all < 0):
             self.heading_direction = 1
-        elif(self.heading_direction == 0 and vector_all < 1 and vector_all > 0):
+        elif(self.heading_direction == 0 and vector_all < 0.6 and vector_all > 0):
             self.heading_direction = -1
             
         return self.heading_direction
@@ -1262,48 +1291,118 @@ class VideoLaneDetector(LaneDetector):
         return np.median(lane_dist), np.std(lane_dist) / self.exp_lane_width_meter, is_cross
     
     def __sanity_check(self, left_lane, right_lane, img_width, base_y_po, info="ERROR"):
+        '''Total score of 7'''
         result = []
         debug_msg = ""
     
         if left_lane is None or right_lane is None:
-            result = [False, False, False, False]
+            result = [0, 0, -10, 0, 0, 0]
             debug_msg = "LN_BS: F LN_W: F LN_PR: F LN_ER: F !"+info
             return result, debug_msg
         
         left_lane_base = left_lane.line_x_pos(base_y_po)
         right_lane_base = right_lane.line_x_pos(base_y_po)
         
+        
+        # True false question
         if (left_lane_base > img_width //2 or \
                right_lane_base < img_width //2):
-            result.append(False)
-            debug_msg = debug_msg + "LN_BS: F "
+            lane_base_score = 0
         else:
-            result.append(True)
-            debug_msg = debug_msg + "LN_BS: T "
+            lane_base_score = 1
+            
+        result.append(lane_base_score)
+        debug_msg = debug_msg + ("LN_BS: %.1f " % lane_base_score)
+            
+        left_lane_radius = left_lane.line_curvature(base_y_po)
+        right_lane_radius = right_lane.line_curvature(base_y_po)
+        
+        # Return as a number, 100% = same, 0% = not the same
+        diff_radius = min(left_lane_radius / right_lane_radius, right_lane_radius / left_lane_radius)
+        if diff_radius < 0.4:
+            diff_radius_score = 0
+        elif diff_radius < 0.6:
+            diff_radius_score = 0.3
+        elif diff_radius < 0.8:
+            diff_radius_score = 0.8
+        else:
+            diff_radius_score = 1
+        
+        result.append(diff_radius_score)
+        debug_msg = debug_msg + ("LN_BR: %.1f " % diff_radius_score)
             
         mean_dist, norm_std, is_cross = self.__parallel_test(left_lane, right_lane, base_y_po)
         lane_dist_near_car = (right_lane.line_x_pos(base_y_po) - left_lane.line_x_pos(base_y_po)) * self.camera.xm_per_pix 
         
-        if (lane_dist_near_car > self.exp_lane_width_meter * 0.75 and lane_dist_near_car < self.exp_lane_width_meter * 1.2):
-            result.append(True)
-            debug_msg = debug_msg + "LN_W: T "
+        
+        lane_ptg = min(lane_dist_near_car / self.exp_lane_width_meter,  self.exp_lane_width_meter / lane_dist_near_car)
+        if lane_ptg < 0.5:
+            lane_width_score = 0
+        elif lane_ptg < 0.75:
+            lane_width_score = 0.5
         else:
-            result.append(False)
-            debug_msg = debug_msg + "LN_W: F "
+            lane_width_score = 1
+        
+        result.append(lane_width_score)
+        debug_msg = debug_msg + ("LN_W: %.1f " % lane_width_score)
+        
+        
+        if is_cross:
+            is_cross_score = -10
+        else:
+            is_cross_score = 1
+        
+        debug_msg = debug_msg + ("LN_CRS: %.1f" % is_cross_score)
+        result.append(is_cross_score)
+            
+        # Return as boolean, T no cross, F cross, critical error
+        
+        if (norm_std > 0.3):
+            parallel_test = 0
+        elif (norm_std > 0.2):
+            parallel_test = 0.5
+        else:
+            parallel_test = 1
+        result.append(parallel_test)
+        debug_msg = debug_msg + ("LN_PR: %.1f " % parallel_test)
 
-        if (norm_std > 0.3 or is_cross):
-            result.append(False)
-            debug_msg = debug_msg + "LN_PR: F "
-        else:
-            result.append(True)
-            debug_msg = debug_msg + "LN_PR: T "
-
-        if (left_lane.error_rate() + right_lane.error_rate() > 1):
-            result.append(False)
-            debug_msg = debug_msg + "LN_ER: F "
-        else:
-            result.append(True)
-            debug_msg = debug_msg + "LN_ER: T "
+        max_point = 36000
+        max_ypoint = base_y_po
+        # These should not be return,
+        
+        margin = 50
+        nonzerox = left_lane.pixels[:,1]
+        nonzeroy = left_lane.pixels[:,0]
+        left_fit = left_lane.polyfit
+        try:
+            left_lane_inds = ((nonzerox > (left_fit[0]*(nonzeroy**2) + left_fit[1]*nonzeroy + 
+                left_fit[2] - margin)) & (nonzerox < (left_fit[0]*(nonzeroy**2) + 
+                left_fit[1]*nonzeroy + left_fit[2] + margin))) 
+            left_point_cnt = min(max_point, len(left_lane_inds))
+            left_ypoint_cnt = len(np.unique(nonzeroy[left_lane_inds]))
+        except:
+            left_point_cnt = 0 
+            left_ypoint_cnt = 0
+            
+        nonzerox = right_lane.pixels[:,1]
+        nonzeroy = right_lane.pixels[:,0]
+        right_fit = right_lane.polyfit
+        try:
+            right_lane_inds = ((nonzerox > (right_fit[0]*(nonzeroy**2) + right_fit[1]*nonzeroy + 
+                right_fit[2] - margin)) & (nonzerox < (right_fit[0]*(nonzeroy**2) + 
+                right_fit[1]*nonzeroy + right_fit[2] + margin)))  
+            right_point_cnt = min(max_point, len(right_lane_inds))
+            right_ypoint_cnt = len(np.unique(nonzeroy[right_lane_inds]))
+        except:
+            right_point_cnt = 0 
+            right_ypoint_cnt = 0
+        
+        point_score = (left_point_cnt + right_point_cnt) / max_point / 2
+        ypoint_score = (left_ypoint_cnt + right_ypoint_cnt) / max_ypoint / 2
+        result.append(point_score)
+        result.append(ypoint_score)
+        debug_msg = debug_msg + ("LN_PT: %.3f" %  point_score )
+        debug_msg = debug_msg + ("LN_YPT: %.3f" %  ypoint_score )
             
         return result, debug_msg
     
@@ -1349,7 +1448,7 @@ class VideoLaneDetector(LaneDetector):
                 
                 sanity_result_prev, self.debug_prev_frame_status = self.__sanity_check(temp_left_lane, temp_right_lane, w, h)
                 
-                if all(sanity_result_prev):
+                if np.sum(sanity_result_prev) > 5:
                     working = True
                 else:
                     working = False
@@ -1394,8 +1493,8 @@ class VideoLaneDetector(LaneDetector):
         sanity_score_prev = np.sum(sanity_result_prev)
         sanity_score_curr = np.sum(sanity_result_curr)
         
-        if sanity_score_curr >= sanity_score_prev and sanity_score_curr > 1:
-            if sanity_score_curr > 3:
+        if sanity_score_curr >= sanity_score_prev and sanity_score_curr > 4.5:
+            if sanity_score_curr > 5:
                 self.prev_left_lane = left_lane
                 self.prev_right_lane = right_lane
                 self.prev_lane_cnt = 0 
@@ -1404,17 +1503,21 @@ class VideoLaneDetector(LaneDetector):
                 self.prev_lane_cnt += 1
             self.debug_final_chosen_lane = "CURRENT"
             return left_lane, right_lane 
-        elif sanity_score_prev > sanity_score_curr and sanity_score_prev > 1:
-            if sanity_score_prev > 3:
+        elif sanity_score_prev > sanity_score_curr and sanity_score_prev > 4.5:
+            if sanity_score_prev > 5:
                 self.prev_left_lane = temp_left_lane
                 self.prev_right_lane = temp_right_lane
                 self.prev_lane_cnt = 0 
                 self.__find_approx_lane_width(temp_left_lane, temp_right_lane, h)
             else:
                 self.prev_lane_cnt += 1
+            
             self.debug_final_chosen_lane = "FILTER PREV"
+            if(self._LaneDetector__debug_flag):
+                self._LaneDetector__debug_dict['line_trace'] = self._LaneDetector__debug_dict['line_trace_prev']
             return temp_left_lane, temp_right_lane
         else:
+            self.prev_lane_cnt += 1
             if self.prev_left_lane is None or self.prev_right_lane is None:
                 self.debug_final_chosen_lane = "CURRENT"
                 return left_lane, right_lane 
@@ -1481,8 +1584,7 @@ class VideoLaneDetector(LaneDetector):
             cv2.fillPoly(debug_iamge, np.int_([left_line_pts]), (0,255, 0))
             cv2.fillPoly(debug_iamge, np.int_([right_line_pts]), (0,255, 0))
             
-            
-            self._LaneDetector__debug_dict['line_trace'] = debug_iamge
+            self._LaneDetector__debug_dict['line_trace_prev'] = debug_iamge
         
         return left_fit, right_fit, pts_left, pts_right, [], \
                 [], [True], [True]
@@ -1521,7 +1623,7 @@ class VideoLaneDetector(LaneDetector):
         win_xright_low = r_center - window_width//2
         win_xright_high = r_center + window_width//2
         left_windows.append((win_xleft_low, win_y_low, win_xleft_high, win_y_high))
-        right_windows.append((win_xright_low, win_y_low, win_xright_high, win_y_high))
+        right_windows.append((win_xright_low, win_y_low, win_xright_high, win_y_high))        
 
         # Go through each layer looking for max pixel locations
         for level in range(1,(int)(binary_warped.shape[0]/window_height)):
@@ -1623,7 +1725,7 @@ class VideoLaneDetector(LaneDetector):
                     rect_color = (255, 0, 0)
                 cv2.rectangle(binary_warped, (rect[0], rect[1]), (rect[2], rect[3]), rect_color, 2)
             
-            self._LaneDetector__debug_dict['line_trace'] = binary_warped
+            self._LaneDetector__debug_dict['line_trace_prev'] = binary_warped
 
         return left_fit, right_fit, pts_left, pts_right, left_windows, \
                 right_windows, is_left_window_good, is_right_window_good

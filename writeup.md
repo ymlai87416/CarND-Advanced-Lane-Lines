@@ -87,31 +87,18 @@ The image below shows how `RoadFeatureDetector` works. Left side is the original
 In the following section, I am going to explain how I create the thresholded binary image from a given image.
 
 ##### 2.1 Finding white lane lines
-I try to find out the lower threshold intensity for white pixels by obtaining the intensity level (Y channel in YUV color space) which 
-is higher than the 95% of the pixels in the image. It is implemented in the function `__find_white_threshold()`
-. The threshold is then used as the input of `__white_color(img, lower)` to find out the white pixels
- 
+I try to find out the lower threshold intensity for white pixels by obtaining the intensity level (L channel of LAB color space) which 
+is higher than the 99% of the pixels in the image. It is implemented in the function `__find_white_threshold()`.
+The threshold is then used as the input of `__white_color(img, lower)` to find out the white pixels
 
-On the road, the white lane line may be covered by the shadow, this will make the pixel represent the white lane line
-become a light gray or even a gray. It appears to be white because when your brain seeing this gray pixel will try to 
-subtract the shadow and make you think that it is a white lane line.
-
-I have tried to use CLAHE to restore back the white color, but this is not working as expect and 
-at the same time introduces noise to the thresholded binary image and makes the lane detection more difficult. (e.g. make a light gray color region on 
-the road becomes a  white region and hence make road surface detection return wrong result)
- 
-It is not unusual for the white pixel detector failing to find out the white pixels representing the
-white lane, and this is where the edge detector helps in detecting the white lane, which is explained later in this section.
+By setting the threshold to 99%, it effectively remove light spot on the road, but at the same time, it may make detection
+of white line difficult, because sometimes, light spot on the road appear whiter than the white lane line. In these case,
+the edge detector is used to help detecting the white lane, which is explained later in this section.
 
 ##### 2.2 Finding yellow lane lines
-To obtain the yellow pixels representing the yellow lane line, I make use of the HSV color space. I specified the lower
- threshold `[20, 20, 60]` and the upper threshold `[80, 255, 255]`. The function `__yellow_color()` then takes the image and the lower and 
- upper threshold to search for yellow pixels in the image.
- 
-As you can see from the lower and upper threshold, the range of hue cover is not only yellow but from red to green. It is because yellow objects under shadow are likely to be represented by
-dark green pixels in the image. This poses a challenge when processing road image which has trees and plants near the roadside,
- as pixels of those objects are likely to be extracted out by the yellow pixel detector. To mitigate this effect, I use the road surface
- detector, which is discussed later in this section.
+To obtain the yellow pixels representing the yellow lane line, I make use of the B channel of LAB color space. I used the
+threshold from 155 to 200. The function `__yellow_color()` then takes the image and the lower and  upper threshold to 
+search for yellow pixels in the image.
 
 ##### 2.3 Finding edge using Sobel operator
 Sobel operator is useful in the case when the color detection failed or when there are no lanes at all.
@@ -121,36 +108,29 @@ Below image shows the case when the lane line is absent and the result of the ed
 
 ![alt text][image5]
 
+Sobel operator is more susceptible to noise, so we apply `cv2.fastNlMeansDenoising` to the gray scale image first before 
+passing the gray scale image to the function `__abs_sobel_thresh`.
+
+
 ##### 2.4 Finding road surface using H channel
 To filter out noise from the roadside, function `__gray_road_detector` is used to find the road boundary. 
-By removing pixels beyond the road boundary, the lane line detection becomes more accurate.
+By removing pixels beyond the road boundary, the lane line detection can becomes more accurate.
 
-To detect road surface. I assume that are some pixels near the bottom of the picture are on the road surface. Flood fill 
-algorithm is used to find the road surface.
+I use HSV color space to find out the road region.
+First, I remove all the pixel with S channel > 90 and V channel > 60, I then remove all the pixel with V channel > 225.
+By doing so, I keep all the gray like pixel in the image.
+
+Then. I assume that are some pixels (seed pixels) near the bottom of the picture are on the road surface. I mark down 
+all the pixel which is similar to the seed pixel (either in S channel or H channel), and then run flood fill algorithm on it. 
 
 There are a lot of noise even on the road surface, so I have used 5 points near the bottom of the picture 
 in case flood fill algorithm failed at some points. (e.g. The lane may have a black line in the middle, 
 and hence the flood filling on the left side cannot reach the right side.)
 
-H channel of the HSV color space is not sensitive to shadow and I found it is suitable to apply flood fill on the H channel.
-
 Here is the result. Red color represents the road surface, while the blue dots represent the starting points of the flood fill
 algorithm.
 
 ![alt text][image6]
-
-##### 2.5 Color constancy
-Although color constancy is not used in this project, I would also like to explain what color constancy is, and 
-what I have found when trying to use it to complete the project.
-
-Color constancy is an example of subjective constancy and a feature of the human color perception system which ensures 
-that the perceived color of objects remains relatively constant under varying illumination conditions. In this project, 
-it helps the program to identify the color of the pixel irrespective of the ambient light sources.
-
-![alt text][image3]
-
-Although color constancy make the code of finding yellow and white color easier to write, the time taken to process the image is
-too long (reduce the processing rate to 1.5 frames per second), so I do not use this technique in this project.
 
 ##### 2.6 output
 
@@ -363,11 +343,11 @@ Here is an example of my result on a test image:
 
 There are 3 videos in the project and here are my final video output
 
-1.  [Project video](https://youtu.be/9nzhe8n74HE)
+1.  [Project video](https://youtu.be/Q5L7wzd3TW8)
 
-2.  [Challenge video](https://youtu.be/xYrTRIrW054)
+2.  [Challenge video](https://youtu.be/S9NUbt1dQJg)
 
-3.  [Harder challenge video](https://youtu.be/atVWDyXAwI0)
+3.  [Harder challenge video](https://youtu.be/G_x6lyPlSIQ)
 
 ---
 

@@ -2,6 +2,25 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="87233157-ede8-4905-9ace-89b3fccaaff5" name="Default" comment="">
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/error_images/error.jpg" afterPath="$PROJECT_DIR$/error_images/error.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/road_side.png" afterPath="$PROJECT_DIR$/output_images/road_side.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test1.jpg" afterPath="$PROJECT_DIR$/output_images/test1.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test2.jpg" afterPath="$PROJECT_DIR$/output_images/test2.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test3.jpg" afterPath="$PROJECT_DIR$/output_images/test3.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test4.jpg" afterPath="$PROJECT_DIR$/output_images/test4.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test5.jpg" afterPath="$PROJECT_DIR$/output_images/test5.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test6.jpg" afterPath="$PROJECT_DIR$/output_images/test6.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/too_left.png" afterPath="$PROJECT_DIR$/output_images/too_left.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/too_right.png" afterPath="$PROJECT_DIR$/output_images/too_right.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/challenge_video.mp4" afterPath="$PROJECT_DIR$/output_videos/challenge_video.mp4" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/harder_challenge_video.mp4" afterPath="$PROJECT_DIR$/output_videos/harder_challenge_video.mp4" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/project_video.mp4" afterPath="$PROJECT_DIR$/output_videos/project_video.mp4" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/undistort_test1.png" afterPath="$PROJECT_DIR$/writeup_images/undistort_test1.png" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/CarND-Advanced-Lane-Lines-final-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/CarND-Advanced-Lane-Lines-final-checkpoint.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" afterPath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Color normalization.ipynb" afterPath="$PROJECT_DIR$/Color normalization.ipynb" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/detect_lane.py" afterPath="$PROJECT_DIR$/detect_lane.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup.md" afterPath="$PROJECT_DIR$/writeup.md" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -18,8 +37,8 @@
         <entry file="file://$PROJECT_DIR$/writeup.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="294">
-                <caret line="99" column="63" lean-forward="false" selection-start-line="99" selection-start-column="63" selection-end-line="99" selection-end-column="63" />
+              <first_editor relative-caret-position="4685">
+                <caret line="353" column="14" lean-forward="true" selection-start-line="353" selection-start-column="14" selection-end-line="353" selection-end-column="14" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -85,6 +104,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -99,7 +119,6 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
       <pane id="Scratches" />
     </panes>
   </component>
@@ -288,10 +307,10 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18230277" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18656716" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -325,7 +344,18 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/writeup_template.md">
+    <entry file="file://$PROJECT_DIR$/writeup.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/writeup.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="0">
@@ -341,7 +371,16 @@
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="0">
             <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-            <folding />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/writeup_template.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="0">
+            <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           </first_editor>
           <second_editor />
         </state>
@@ -410,7 +449,6 @@
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="240">
             <caret line="25" column="48" lean-forward="false" selection-start-line="25" selection-start-column="48" selection-end-line="25" selection-end-column="48" />
-            <folding />
           </first_editor>
           <second_editor />
         </state>
@@ -419,8 +457,8 @@
     <entry file="file://$PROJECT_DIR$/writeup.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="294">
-            <caret line="99" column="63" lean-forward="false" selection-start-line="99" selection-start-column="63" selection-end-line="99" selection-end-column="63" />
+          <first_editor relative-caret-position="4685">
+            <caret line="353" column="14" lean-forward="true" selection-start-line="353" selection-start-column="14" selection-end-line="353" selection-end-column="14" />
             <folding />
           </first_editor>
           <second_editor />
