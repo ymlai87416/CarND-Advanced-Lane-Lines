@@ -447,7 +447,9 @@ class RoadFeatureDetector:
         return mask_clr
 
     def __create_feature(self, param):
-        denoise_image = cv2.fastNlMeansDenoising(param.image_yuv[:,:,0],None,10,7,21)
+        #denoise_image = cv2.fastNlMeansDenoising(param.image_yuv[:,:,0],None,10,7,21)
+        #denoise_image = cv2.GaussianBlur(param.image_yuv[:,:,0], (15, 15), 0)
+        denoise_image = cv2.bilateralFilter(param.image_yuv[:,:,0],15,75,75)
         sxbinary = self.__abs_sobel_thresh(denoise_image, param.abs_sobel_direction,
                                            param.abs_sobel_low_threshold, param.abs_sobel_high_threshold)
         s_yellow = self.__yellow_color(param.image_enhanced_lab, param.yellow_lower, param.yellow_upper, 0)
@@ -535,7 +537,6 @@ class RoadFeatureDetector:
 
     def get_debug_info(self):
         return self.debug_dict;
-
 
 class Lane:
     def __init__(self, polyfit):
@@ -1123,6 +1124,8 @@ class LaneDetector():
     def augmented_image(self, image):
         if(self.__debug_flag):
             self.__debug_dict = {}
+            
+        image = self.camera.cal_undistort(image)
 
         img_birdview_bin = self.feature_extraction(image)
         img_birdview_bin[img_birdview_bin.shape[0]*59//60:,] = 0

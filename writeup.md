@@ -28,6 +28,7 @@ The goals / steps of this project are the following:
 [image13]: ./writeup_images/line_tracking_hough_fails.png "Hough fail case"
 [image14]: ./writeup_images/lane_search_previous_frame.png "Detect using the detected lane in previous frame"
 [image15]: ./writeup_images/test1.jpg "Annotated image with lane line"
+[image16]: ./writeup_images/edge_detection_2.png "Effect of running filter before apply Sobel operator"
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/571/view) Points
 
@@ -45,7 +46,7 @@ You're reading it!
 #### 1. Briefly state how you computed the camera matrix and distortion coefficients. Provide an example of a distortion corrected calibration image.
 
 The code for this step is contained in the second and the third code cell of the IPython notebook located in "./CarND-Advanced-Lane-Lines-final.ipynb"
-The first code cell defines the `Camera` class, which encapsulates all the logic related to the camera.
+The second code cell defines the `Camera` class, which encapsulates all the logic related to the camera.
 
 The third code cell shows how to use the `Camera` class to correct a distorted images.
 
@@ -69,6 +70,11 @@ To demonstrate this step, I will describe how I apply the distortion correction 
 
 ![alt text][image2]
 
+In the function `augmented_image` of the class `LaneDetector` (6th code cell), it first convert the input image to a distortion-corrected image using the following line:
+```python
+image = self.camera.cal_undistort(image)
+```
+
 #### 2. Describe how (and identify where in your code) you used color transforms, gradients or other methods to create a thresholded binary image.  Provide an example of a binary image result.
 The code for this step is contained in the 4th code cell of the IPython notebook located in "./CarND-Advanced-Lane-Lines-final.ipynb"
 
@@ -91,9 +97,9 @@ I try to find out the lower threshold intensity for white pixels by obtaining th
 is higher than the 99% of the pixels in the image. It is implemented in the function `__find_white_threshold()`.
 The threshold is then used as the input of `__white_color(img, lower)` to find out the white pixels
 
-By setting the threshold to 99%, it effectively remove light spot on the road, but at the same time, it may make detection
+By setting the threshold to 99%, it effectively removes light spot on the road, but at the same time, it may make detection
 of white line difficult, because sometimes, light spot on the road appear whiter than the white lane line. In these case,
-the edge detector is used to help detecting the white lane, which is explained later in this section.
+the edge detector is used to help to detect the white lane, which is explained later in this section.
 
 ##### 2.2 Finding yellow lane lines
 To obtain the yellow pixels representing the yellow lane line, I make use of the B channel of LAB color space. I used the
@@ -104,21 +110,28 @@ search for yellow pixels in the image.
 Sobel operator is useful in the case when the color detection failed or when there are no lanes at all.
 The function `__abs_sobel_thresh` applies the Sobel operator across the x-axis of the image and use the range `20 - 100` as the threshold. 
 
-Below image shows the case when the lane line is absent and the result of the edge detection.
+Below image shows the case when the right lane line is absent and the result of the edge detection.
 
 ![alt text][image5]
 
-Sobel operator is more susceptible to noise, so we apply `cv2.fastNlMeansDenoising` to the gray scale image first before 
+Sobel operator is more susceptible to noise, so we apply `cv2.bilateralFilter` to the gray scale image first before 
 passing the gray scale image to the function `__abs_sobel_thresh`.
+
+```python
+denoise_image = cv2.bilateralFilter(param.image_yuv[:,:,0],15,75,75)
+```
+
+Here is the result to show the effect of the bilateral filter.
+![alt text][image16]
 
 
 ##### 2.4 Finding road surface using H channel
 To filter out noise from the roadside, function `__gray_road_detector` is used to find the road boundary. 
-By removing pixels beyond the road boundary, the lane line detection can becomes more accurate.
+By removing pixels beyond the road boundary, the lane line detection becomes more accurate.
 
 I use HSV color space to find out the road region.
 First, I remove all the pixel with S channel > 90 and V channel > 60, I then remove all the pixel with V channel > 225.
-By doing so, I keep all the gray like pixel in the image.
+By doing so, I keep all the gray-like pixel in the image.
 
 Then. I assume that are some pixels (seed pixels) near the bottom of the picture are on the road surface. I mark down 
 all the pixel which is similar to the seed pixel (either in S channel or H channel), and then run flood fill algorithm on it. 
@@ -215,31 +228,29 @@ The outline of the algorithm is:
 
 ###### 4.1.2 Starting points of the lane line
 
-I first take a histogram of all the columns in the lower half of the image and the bottom quarter of the image, and then
-calculate the starting points of the lane line by a weighted average. (66.6% from the second histogram and 33% from the first histogram)
-
-For images having the lane line as a vertical line, the first histogram works, but for the following image, the first histogram can give 
-me the wrong starting point, so I have to factor in the bottom quarter of the image. Below image shows the result of the algorithm.
+I first take a histogram of all the columns in the bottom quarter of the image, and then
+calculate the starting points of the lane line by finding the position of maximum peek on the left and right side.
 
 ![alt text][image8]
 
-In function `find_left_and_right_base`
+In function `find_left_and_right_base_conv`
 ```
-import numpy as np
-histogram_50 = np.sum(weighted_binary_warped[weighted_binary_warped.shape[0] // 2:, :], axis=0)
-histogram_25 = np.sum(weighted_binary_warped[weighted_binary_warped.shape[0] * 3 // 4 :, :], axis=0)
-
-midpoint = np.int(histogram_50.shape[0] // 2)
-leftx_base = (np.argmax(histogram_50[:midpoint]) + np.argmax(histogram_25[:midpoint]) *2)//3
-rightx_base = (np.argmax(histogram_50[midpoint:]) + np.argmax(histogram_25[midpoint:]) * 2)//3 + midpoint
+histogram = np.sum(binary_warped[int(3*weighted_binary_warped.shape[0]/4):,:], axis=0)
+        
+l_sum = histogram[:int(weighted_binary_warped.shape[1]/2)]
+l_center = np.argmax(np.convolve(window,l_sum))-window_width//2
+r_sum = histogram[int(weighted_binary_warped.shape[1]/2):]
+r_center = np.argmax(np.convolve(window,r_sum))-window_width//2+int(weighted_binary_warped.shape[1]/2)
 ```
 
 But this will fail sometime, and return a wrong pair of starting position of the left and right lane like following.
 
 ![alt text][image9]
 
-To tackle this, the function `find_left_and_right_base_fix_width` take the width of the common road lane in US into 
-consideration when finding the starting position of lane lines.
+To tackle this, the function `find_left_and_right_base_fix_width` take the width of the common road lane in the US into 
+consideration when finding the starting position of lane lines. The function finds the peek of the histogram on the 
+left and right side, then for the left peek, I scan for the peek which appear after the point `left peek + 0.7 * expected road width`.
+I also do the same for the right peek and return the pair which has the highest peek value.
 
 To further improve the detection of starting point using the histogram, I apply gaussian weighting on the thresholded binary image if
 I know the starting location of the lane lines in the previous frame.
@@ -250,8 +261,6 @@ I know the starting location of the lane lines in the previous frame.
 ###### 4.1.3 Lane line pixel searching algorithm
 
 The function `__find_left_and_right_lane_conv` in the class `LaneDetector` does the lane line pixel searching.
-
-
 
 The algorithm works by cutting the image into `15` layers along the y-axis. At each layer, it applies a convolution to find
 out the window (`50` pixels in this project) having the maximum number of "hot" pixels with weighting consider.
@@ -299,15 +308,30 @@ the IPython notebook located in "./CarND-Advanced-Lane-Lines-final.ipynb"
 
 To confirm that the detected lane is real, I consider the following when implementing the algorithm:
 
-* Checking that there is one lane line starting on the left side, and the other lane starting on the right side of the image.
-* Checking that the number of empty windows (windows without enough pixels) is smaller than the given threshold.
-* Checking that they are separated by approximately the right distance horizontally
-* Checking that they are roughly parallel
+1. Checking that there is one lane line starting on the left side, and the other lane starting on the right side of the image.
+2. Checking that if the 2 lanes are having more or less the same radius of curvature.
+3. Checking that if the 2 lanes are crossing each other
+4. Checking that they are separated by approximately the right distance horizontally
+5. Checking that they are roughly parallel
+6. Finding the number of pixels which is around the polynomial representing the lane line, and the distribution among the y-axis.
 
-If the lane passes all the sanity check, It is stored and is used in the lane detection for the later frames. If the lane is 
-good enough (e.g. fulfill at least 2 of the criteria), I will still accept it as the answer, but I will not use the 
-detected lane to find out the lane in later frame lane detection because doing so will result in more error. If the lane cannot fulfill more
-than 1 criterion, the latest high confidence lane pair is used at the last resort.
+The scores of each item are as follow:
+ 
+| Test Item        | Score (Success/Fail)   | 
+|:-------------:|:-------------:| 
+| 1      | 1 / 0    | 
+| 2      | 1 / 0      |
+| 3      | 1 / -10     |
+| 4     | 1 / 0.8 / 0.6 / 0.4    |
+| 5     | 1 / 0.5 / 0  |
+| 6     | No. of point / 36000   |
+| 7     | No. of point (projection on y-axis) / H. of the image (720)   |
+ 
+ 
+If the lane has a score of 5 or above, It is stored as the most recent high confidence lane pair and is used in the lane 
+detection for the later frames. If the lane has a score of 4.5 or above, I still accept it as the answer, but I do 
+not use the detected lane to find out the lane in later frame lane detection because doing so will result in more error.
+ If the lane has a score less than 4.5, the most recent high confidence lane pair is used at the last resort.
 
 The sanity check is implemented in the function `____sanity_check` in  class  `VideoLaneDetector`
 while the lane line pair selection is implemented in the function `__detect_lane` in  class  `VideoLaneDetector`
@@ -343,11 +367,11 @@ Here is an example of my result on a test image:
 
 There are 3 videos in the project and here are my final video output
 
-1.  [Project video](https://youtu.be/Q5L7wzd3TW8)
+1.  [Project video](https://youtu.be/XRmveXo8ol4)
 
-2.  [Challenge video](https://youtu.be/S9NUbt1dQJg)
+2.  [Challenge video](https://youtu.be/DmU-U1-CZd0)
 
-3.  [Harder challenge video](https://youtu.be/G_x6lyPlSIQ)
+3.  [Harder challenge video](https://youtu.be/aEijLKR8_pA)
 
 ---
 
@@ -365,7 +389,7 @@ For the lane detection:
 1. I have improved the lane line pixel searching algorithm to track lane line having slope close to zero. Another problem of lane line pixel searching 
 algorithm is that it may merge both lane lines in some case. (e.g. in case of noise). It is because 
 the algorithm greedily accepts windows with the maximum number of pixels. 
-2. The polyfit algorithm is hard to control. it may return undesired polynomial if there are not enough lane line pixels, or
+2. The polyfit algorithm is hard to control. it may return undesired polynomial if there are not enough lane line pixels or
 too many noise pixels.
 
 For the sanity check:

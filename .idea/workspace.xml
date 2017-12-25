@@ -2,24 +2,54 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="87233157-ede8-4905-9ace-89b3fccaaff5" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/error_images/error.jpg" afterPath="$PROJECT_DIR$/error_images/error.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/road_side.png" afterPath="$PROJECT_DIR$/output_images/road_side.png" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/bright_road.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_images/road_side.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_images/too_left.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_images/too_right.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/debug_images/z test4.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/road_side.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/test1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/test2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/test3.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/test4.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/test5.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/test6.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/too_left.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/images/too_right.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/reflection_window.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/road_side.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/road_side.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/test1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/test2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/test3.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/test4.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/test5.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/test6.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/too_left.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/s-channel/too_right.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/too_left.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/output_images/too_right.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test_images/bright_road.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test_images/reflection_window.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test_images/road_side.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test_images/too_left.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/test_images/too_right.png" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/debug_images/test1.jpg" afterPath="$PROJECT_DIR$/output_images/debug_images/test1.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/debug_images/test2.jpg" afterPath="$PROJECT_DIR$/output_images/debug_images/test2.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/debug_images/test3.jpg" afterPath="$PROJECT_DIR$/output_images/debug_images/test3.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/debug_images/test5.jpg" afterPath="$PROJECT_DIR$/output_images/debug_images/test5.jpg" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/debug_images/test6.jpg" afterPath="$PROJECT_DIR$/output_images/debug_images/test6.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test1.jpg" afterPath="$PROJECT_DIR$/output_images/test1.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test2.jpg" afterPath="$PROJECT_DIR$/output_images/test2.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test3.jpg" afterPath="$PROJECT_DIR$/output_images/test3.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test4.jpg" afterPath="$PROJECT_DIR$/output_images/test4.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test5.jpg" afterPath="$PROJECT_DIR$/output_images/test5.jpg" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/test6.jpg" afterPath="$PROJECT_DIR$/output_images/test6.jpg" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/too_left.png" afterPath="$PROJECT_DIR$/output_images/too_left.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_images/too_right.png" afterPath="$PROJECT_DIR$/output_images/too_right.png" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/challenge_video.mp4" afterPath="$PROJECT_DIR$/output_videos/challenge_video.mp4" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/harder_challenge_video.mp4" afterPath="$PROJECT_DIR$/output_videos/harder_challenge_video.mp4" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/output_videos/project_video.mp4" afterPath="$PROJECT_DIR$/output_videos/project_video.mp4" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup_images/undistort_test1.png" afterPath="$PROJECT_DIR$/writeup_images/undistort_test1.png" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.ipynb_checkpoints/CarND-Advanced-Lane-Lines-final-checkpoint.ipynb" afterPath="$PROJECT_DIR$/.ipynb_checkpoints/CarND-Advanced-Lane-Lines-final-checkpoint.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" afterPath="$PROJECT_DIR$/CarND-Advanced-Lane-Lines-final.ipynb" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/Color normalization.ipynb" afterPath="$PROJECT_DIR$/Color normalization.ipynb" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/detect_lane.py" afterPath="$PROJECT_DIR$/detect_lane.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/writeup.md" afterPath="$PROJECT_DIR$/writeup.md" />
     </list>
@@ -37,8 +67,8 @@
         <entry file="file://$PROJECT_DIR$/writeup.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="4685">
-                <caret line="353" column="14" lean-forward="true" selection-start-line="353" selection-start-column="14" selection-end-line="353" selection-end-column="14" />
+              <first_editor relative-caret-position="449">
+                <caret line="387" column="23" lean-forward="true" selection-start-line="387" selection-start-column="23" selection-end-line="387" selection-end-column="23" />
                 <folding />
               </first_editor>
               <second_editor />
@@ -307,7 +337,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1936" height="1056" extended-state="0" />
+    <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18656716" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
@@ -457,8 +487,8 @@
     <entry file="file://$PROJECT_DIR$/writeup.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="4685">
-            <caret line="353" column="14" lean-forward="true" selection-start-line="353" selection-start-column="14" selection-end-line="353" selection-end-column="14" />
+          <first_editor relative-caret-position="449">
+            <caret line="387" column="23" lean-forward="true" selection-start-line="387" selection-start-column="23" selection-end-line="387" selection-end-column="23" />
             <folding />
           </first_editor>
           <second_editor />
